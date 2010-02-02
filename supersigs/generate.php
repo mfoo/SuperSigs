@@ -160,7 +160,6 @@ END;
 				
 					<p>Select the options below. An example image with placings can be seen here:</p>
 					<p><img src="img/positions.png" alt="positions"/></p>
-
 		
 					<?php
 							if(isset($_POST['id'])){
