@@ -37,7 +37,7 @@
 	if(!isset($_GET['id']))
 		die("Please enter a player name or ID!");
 	
-	$playerID = mysql_real_escape_string(urldecode($_GET['id']));
+	$playerID = mysql_real_escape_string($_GET['id']);
 
 	mysql_query("SET NAMES 'utf8'");
 	
@@ -107,51 +107,51 @@
 	
 	// Draw everything they want, use mysql_real_escape_string() to sanitise
 	if(isset($_GET['one'])){  
-		$background = drawText($playerID, "one", $background, $coordinates[0][1], $coordinates[0][2], mysql_real_escape_string(urldecode($_GET['one'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "one", $background, $coordinates[0][1], $coordinates[0][2], mysql_real_escape_string($_GET['one']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['two'])){
-		$background = drawText($playerID, "two", $background, $coordinates[1][1], $coordinates[1][2],  mysql_real_escape_string(urldecode($_GET['two'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "two", $background, $coordinates[1][1], $coordinates[1][2],  mysql_real_escape_string($_GET['two']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['three'])){
-		$background = drawText($playerID, "three", $background, $coordinates[2][1], $coordinates[2][2],  mysql_real_escape_string(urldecode($_GET['three'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "three", $background, $coordinates[2][1], $coordinates[2][2],  mysql_real_escape_string($_GET['three']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['four'])){
-		$background = drawText($playerID, "four", $background, $coordinates[3][1], $coordinates[3][2],  mysql_real_escape_string(urldecode($_GET['four'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "four", $background, $coordinates[3][1], $coordinates[3][2],  mysql_real_escape_string($_GET['four']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['five'])){
-		$background = drawText($playerID, "five", $background, $coordinates[4][1], $coordinates[4][2],  mysql_real_escape_string(urldecode($_GET['five'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "five", $background, $coordinates[4][1], $coordinates[4][2],  mysql_real_escape_string($_GET['five']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['six'])){
-		$background = drawText($playerID, "six", $background, $coordinates[5][1], $coordinates[5][2],  mysql_real_escape_string(urldecode($_GET['six'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "six", $background, $coordinates[5][1], $coordinates[5][2],  mysql_real_escape_string($_GET['six']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['seven'])){
-		$background = drawText($playerID, "seven", $background, $coordinates[6][1], $coordinates[6][2],  mysql_real_escape_string(urldecode($_GET['seven'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "seven", $background, $coordinates[6][1], $coordinates[6][2],  mysql_real_escape_string($_GET['seven']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['eight'])){
-		$background = drawText($playerID, "eight", $background, $coordinates[7][1], $coordinates[7][2],  mysql_real_escape_string(urldecode($_GET['eight'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "eight", $background, $coordinates[7][1], $coordinates[7][2],  mysql_real_escape_string($_GET['eight']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['nine'])){
-		$background = drawText($playerID, "nine", $background, $coordinates[8][1], $coordinates[8][2],  mysql_real_escape_string(urldecode($_GET['nine'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "nine", $background, $coordinates[8][1], $coordinates[8][2],  mysql_real_escape_string($_GET['nine']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['ten'])){
-		$background = drawText($playerID, "ten", $background, $coordinates[9][1], $coordinates[9][2],  mysql_real_escape_string(urldecode($_GET['ten'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "ten", $background, $coordinates[9][1], $coordinates[9][2],  mysql_real_escape_string($_GET['ten']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['eleven'])){
-		$background = drawText($playerID, "eleven", $background, $coordinates[10][1], $coordinates[10][2],  mysql_real_escape_string(urldecode($_GET['eleven'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "eleven", $background, $coordinates[10][1], $coordinates[10][2],  mysql_real_escape_string($_GET['eleven']), $black, $white, $size, $font);
 	}
 	
 	if(isset($_GET['twelve'])){
-		$background = drawText($playerID, "twelve", $background, $coordinates[11][1], $coordinates[11][2],  mysql_real_escape_string(urldecode($_GET['twelve'])), $black, $white, $size, $font);
+		$background = drawText($playerID, "twelve", $background, $coordinates[11][1], $coordinates[11][2],  mysql_real_escape_string($_GET['twelve']), $black, $white, $size, $font);
 	}
 	
 
