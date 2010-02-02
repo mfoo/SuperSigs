@@ -3,6 +3,8 @@ README
 SuperSigs allows users to produce custom forum signatures using data from
 HLStatsX:CE (http://www.hlxcommunity.com/).
 
+For an example, see example.png in this folder.
+
 Supersigs is free and available for download and editing. All you need is a
 server with HLstats Community Edition (or permission to access it's database)
 and the GD image library - so if you have HLStatsX:CE already then you can run
