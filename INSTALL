@@ -29,6 +29,9 @@ Replace it with your website's URL (without the "http://" part). The text here
 is the text that is written in the bottom right hand corner of the signatures
 in a smaller font (see example.png).
 
+You should also change the $name variable to be your server's name (e.g. My
+wesome Server).
+
 The following line:
 
 	$statsDir="hlstatsx";

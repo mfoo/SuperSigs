@@ -141,11 +141,11 @@
 				$text = "Fav Weapon: " . $weaponname['name'];
 				break;
 			case "favteam":
-				$data = mysql_fetch_array(mysql_query("SELECT team FROM  hlstats_Events_Changeteam	WHERE playerId = " . $playerID . " GROUP BY team ORDER BY Count(team) DESC LIMIT 1"));
+				$data = mysql_fetch_array(mysql_query("SELECT team FROM  hlstats_Events_ChangeTeam WHERE playerId = " . $playerID . " GROUP BY team ORDER BY Count(team) DESC LIMIT 1"));
 				$text = "Fav Team: " . $data['team'];
 				break;
 			case "favclass" :
-				$data = mysql_fetch_array(mysql_query("SELECT role FROM hlstats_Events_ChangeRole	WHERE playerId = " . $playerID  . " GROUP BY role ORDER BY Count(role) DESC LIMIT 1"));
+				$data = mysql_fetch_array(mysql_query("SELECT role FROM hlstats_Events_ChangeRole WHERE playerId = " . $playerID  . " GROUP BY role ORDER BY Count(role) DESC LIMIT 1"));
 				$text = "Fav Class: " . $data['role'];
 				break;
 			case "favvictim":
@@ -168,7 +168,7 @@
 				$text = "Shots fired: " . $data['shots'];
 				break; */ 
 			case "recentaward":
-				$data = mysql_fetch_array(mysql_query("SELECT awardId FROM hlstats_Players_awards WHERE playerId =" . $playerID . " ORDER BY awardTime DESC"));
+				$data = mysql_fetch_array(mysql_query("SELECT awardId FROM hlstats_Players_Awards WHERE playerId =" . $playerID . " ORDER BY awardTime DESC"));
 				$data = mysql_fetch_array(mysql_query("SELECT verb FROM hlstats_Awards WHERE awardId = " . $data['awardId']));
 				$text = "Most recent award: " . $data['verb'];
 				break;		
@@ -193,7 +193,7 @@
 			case "serverrank":
 				$data = mysql_fetch_array(mysql_query("SELECT kills FROM hlstats_Players WHERE playerID = " . $playerID));
 				$data = $data['kills'];
-				$data = mysql_fetch_array(mysql_query("SELECT rankName FROM hlstats_ranks WHERE maxKills <= " . $data['kills'] . " AND game = '" . $game . "' ORDER BY minKills DESC"));
+				$data = mysql_fetch_array(mysql_query("SELECT rankName FROM hlstats_Ranks WHERE maxKills <= " . $data['kills'] . " AND game = '" . $game . "' ORDER BY minKills DESC"));
 				$text = $data['rankName'];
 				break;
 			case "time":
@@ -239,7 +239,7 @@
 				break;
 		}
 		
-		$text=preg_replace("/\\\/","",$text);
+		$textn = preg_replace("/\\\/","",$text);
 		
 		$textDimensions = imagettfbbox($size, 0, $font, $text);
 		// If they are middle areas, center align them

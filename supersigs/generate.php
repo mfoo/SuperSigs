@@ -63,9 +63,10 @@ END;
 		<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
 		<meta name="description" content="Supernova's Supersigs Signature Generator"/>
 		<meta name="keywords" content="signature generator hlstats"/> 
-		<meta name="author" content="Martin"/> 
+		<meta name="author" content="Martin Foot"/> 
 		<title>Supernova's Super Sigs for HLstats Community Edition</title>
 		<link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
+		<script src="jquery.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			function toggleCustom(id) {
 				if(document.getElementsByName(id)[0].value == "custom" + id){
@@ -75,6 +76,56 @@ END;
 					document.getElementById("custom" + id + "div").style.display = 'none';
 				}
 			}
+						
+			function getImageUrl(){
+				// Grab the custom text field instead of "custom<X>" if that is selected.
+				// TODO: Clean this up
+				return "index.php?generate=true&id=" + 
+					$("input[name=id]").val() + "&one=" +
+					($("select[name=one]").val() == "customone" ?  $("input[name=customone]").val() : $("select[name=one]").val()) + "&two=" +
+					($("select[name=two]").val() == "customtwo" ? $("input[name=customtwo]").val() : $("select[name=two]").val()) + "&three=" + 
+					($("select[name=three]").val() == "customthree" ? $("input[name=customthree]").val() : $("select[name=three]").val()) + "&four=" + 
+					($("select[name=four]").val() == "customfour" ? $("input[name=customfour]").val() : $("select[name=four]").val()) + "&five=" +
+					($("select[name=five]").val() == "customfive" ? $("input[name=customfive]").val() : $("select[name=five]").val()) + "&six=" +
+					($("select[name=six]").val() == "customsix" ? $("input[name=customsix]").val() : $("select[name=six]").val()) + "&seven=" +
+					($("select[name=seven]").val() == "customseven" ? $("input[name=customseven]").val() : $("select[name=seven]").val()) + "&eight=" +
+					($("select[name=eight]").val() == "customeight" ? $("input[name=customeight]").val() : $("select[name=eight]").val()) + "&nine=" +
+					($("select[name=nine]").val() == "customnine" ? $("input[name=customnine]").val() : $("select[name=nine]").val()) + "&ten=" +
+					($("select[name=ten]").val() == "customten" ? $("input[name=customten]").val() : $("select[name=ten]").val()) + "&eleven=" +
+					($("select[name=eleven]").val() == "customeleven" ? $("input[name=customeleven]").val() : $("select[name=eleven]").val()) + "&twelve=" +
+					($("select[name=twelve]").val() == "customtwelve" ? $("input[name=customtwelve]").val() : $("select[name=twelve]").val()) + "&font=" +
+					$("select[name=font]").val() + "&background=" +
+					$("select[name=background]").val();
+			}
+			
+			function reloadImage(){
+				var url = getImageUrl();
+				var image = $("#sig");
+
+				image.fadeOut(function(){
+					// Change the image source then the user clicks something
+					$(this).attr("src", url);
+				});
+			
+				image.load(function(){
+					// When the image has loaded, fade back in again
+					$(this).fadeIn();
+					
+					// Tell the person to submit the form (Can't get the player name from
+					// the db without sending it to the php
+					$("textarea[name=output]").val("Please press Submit to generate a new signature code.");
+				});
+			}
+	
+			$(document).ready(function(){
+				// Tell all of the select boxes to reload the image on change
+				$("select").change(reloadImage);
+			
+				// Same for the custom input boxes
+				$("input[type=text]").blur(reloadImage);
+			});
+	
+			
 		</script>
 	</head>
 	<body style="margin: auto; width: 870px;">
@@ -82,7 +133,7 @@ END;
 	<div class="container">
 
 		<div class="header">
-			<a href="generate.php"><span>Fester's Place Custom Signatures</span></a>
+			<a href="generate.php"><span><?php echo $name ?> Custom Signatures</span></a>
 		</div>
 
 		<div class="stripes"><span></span></div>
@@ -103,11 +154,11 @@ END;
 				<div class="content">
 
 					<h1>Welcome to the Generator</h1>
-					<div class="descr">Feb 23, 2009 by Supernova</div>
+					<div class="descr">Feb 02, 2010 by Supernova</div>
 
-					<p>Welcome to the latest version of the custom signature generator.</p>
+					<p>Welcome to the custom signature generator.</p>
 				
-					<p>Select the thingies below. An example image with placings can be seen here:</p>
+					<p>Select the options below. An example image with placings can be seen here:</p>
 					<p><img src="img/positions.png" alt="positions"/></p>
 
 		
@@ -161,7 +212,7 @@ END;
 								$url .= "&background=Random";
 				
 							// Output the text
-							echo "<p>Your sig can be seen here:</p>\n\n<p><img src=\"index.php?generate=true&id=" . urlencode($_POST['id']) . $url ."\"/>\n</p>";
+							echo "<p>Your sig can be seen here:</p>\n\n<p style=\"height: 75px;\"><img src=\"index.php?generate=true&id=" . urlencode($_POST['id']) . $url ."\" alt=\"signature\" id=\"sig\"/>\n</p>";
 							echo "<p>Your signature code is:</p>\n";
 							echo "<form name=\"copytext\">";
 							echo "<textarea name=\"output\" rows=\"3\" cols=\"50\" wrap=\"on\">";

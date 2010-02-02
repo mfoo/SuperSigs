@@ -31,10 +31,13 @@
 	
 	// The server name that is shown in the bottom right of the sigs
 	$servername="localhost";
+	
+	// A friendly name for the server. Used in the generator title as $name Custom Signatures.
+	$name = "My Server";
 
 	// The path to the supersigs installation directory
 	// Such that sigs directory is $servername/$sigsDir
-	$sigsDir = "supersigs";
+	$sigsDir = "supersigs/supersigs";
 	
 	// This is the directory to your hlstatsx:ce stats, so that a link to your player stats can be generated.
 	$statsDir = "hlstatsx";
@@ -53,8 +56,7 @@
 	//	aoc		Age of Chivalry
 	
 	// Note, currently only tf, ff, and dods are supported.
-	$game = "tf";
-	
+	$game = "tf";	
 	
 	if(!($db = mysql_connect($statserver, $statsuser, $statspass))) {
 		die("Can't connect to the server!");
