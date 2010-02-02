@@ -1,0 +1,96 @@
+INSTALL
+
+=Installation Instructions=
+==Required==
+After downloading, you will need to extract the files and upload them to your
+server where you want them. You must then ensure that the "sigs" directory is
+writable by the script (chmod 755) - otherwise none of the sigs will be saved!
+You will now need to configure the script for your server. Open config.php and
+look for the line saying:
+
+	$statserver="localhost";
+	
+Set localhost to the address of your SQL server. Now search for the lines:
+
+	$statsuser="username";
+	$statspass="password";
+	$statsdb="hlstats";
+	
+Each these need to be changed to your MySQL database user's username and
+password, and the database name respectively. Note: SuperSigs will never modify
+your data, but if you want extra security you can make a new database user with
+only read access to the database for SuperSigs to use.
+
+The next thing to edit is your server name. Look for the line containing
+
+	$servername="www.festersplace.com";
+	
+Replace it with your website's URL (without the "http://" part). The text here
+is the text that is written in the bottom right hand corner of the signatures
+in a smaller font (see example.png).
+
+The following line:
+
+	$statsDir="hlstatsx";
+
+Needs to be changed to the location of your stats directory. This is so that the
+generator can produce a signature that links to your individual player view
+stats. For instance, if you can view stats on
+http://yourserver.com/hlstatsx/hlstats.php then the HLStatsX directory is
+"hlstatsx". 
+
+You will also need to change the directory of this script
+
+	$sigsDir="supersigs";
+	
+to point to the directory of the installation of Supersigs, for example if you
+were to access your generator through http://www.hello.com/sigs/generate.php
+then the value should be set to "sigs". 
+
+The game that you are using Supersigs for needs to be set also. Search for the
+line
+
+	$game = "tf";
+
+This needs to be changed to one of the codes shown above the line in comments.
+For example, if you were using Fortress Forever then change "tf" to "ff".
+
+==Optional==
+You can also set the cache time. This is the amount of time before each
+signature is re-made with up-to-date stats and is measured in seconds. If you
+set it to 0, it will render itself every time somebody views a page with the
+signature on. For example:
+
+	$cacheExpiryTime = 3600;
+	
+represents an expiry time of one hour (the default setting).
+
+Now look for the line that says:
+
+	// The size of the text in the printout
+	$size = 12;
+
+This is the size of the font. This can be changed to anything you like, but be
+careful - too big and you will get overlapping.
+
+You may also edit the foreground and background colours of the text used in the
+signatures. The default is a white foreground with a black background, but you
+may change it to anything you want. The script uses RGB values for colours, and
+you can use a site such as this to find the correct RGB value for the colour you
+want. To edit the colours, find the following lines and set them to the values
+you want:
+
+	// Foreground white, rgb(255,255,255)
+	$foregroundr = 255;
+	$foregroundg = 255;
+	$foregroundb = 255;
+
+	// Background black, rgb(0,0,0)
+	$backgroundr = 0;
+	$backgroundg = 0;
+	$backgroundb = 0;
+
+Note: The download only contains sample background images for Team Fortress 2,
+and if you plan on running this on a different game you will need to add your
+own background images for the script to work. Check the FAQ for more information
+on adding your own sigs.

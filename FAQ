@@ -1,0 +1,43 @@
+FAQ
+
+Contents:
+	How do I add my own backgrounds?
+	How do I add my own fonts?
+	How do I add new information to the script?
+
+=How do I add my own backgrounds?=
+The script randomly selects backgrounds for each class from a folder, so all you
+have to do is upload an image of the correct size into the folder with the right
+filename. The size used by the signatures is 400 x 75 pixels.
+1.) Edit your screenshot or image so that it is the correct size.
+2.) Look inside the supersigs/images/[YOUR GAME] directory where [YOUR GAME] is
+	the name of you game (such as "tf" for Team Fortress 2).
+3.) Select the folder for the class name that you want to add the picture for
+	(or add one if it isn't there) and take a look at the files in the folder.
+	Each file should be named 1.jpg, 2.jpg, 3.jpg etc.
+4.) Find the highest number, add one to it, and save your new image to the
+	folder with that number as it's name.
+
+=How do I add my own fonts?=
+To add a new font, just upload the TrueType font (.ttf file) to the fonts
+directory of your SuperSigs installation. Check the generator and it should now
+appear in the list.
+
+=How do I add new information to the script?=
+Adding new data and text to the script requires a little knowledge of HTML, PHP
+and SQL. If you're not sure what to do, send me a message. If you're confident
+enough to change things then you need to change two files.
+
+If you look at functions.php, you have access to the variable $playerID which is
+the numeric of the player in the hlstats_Players table. Write an SQL query that
+returns the information you want to display, then scroll down through
+functions.php until you find the switch statement. Add a new statement on the
+bottom of the switch in the same style as the others, such that $text will
+contain the thing that you want to write out at the end. Save the file, then
+take a look at generate.php. At the top is a function called printLots($name)
+which is in charge of creating the drop down menu selections. Add in the line:
+
+	echo "\t\t\t<option value=\"[NAME]\">[TEXT]</option></br>\n";
+	
+where [NAME] is the text you placed in the switch statement in functions.php and
+[TEXT] is the option name you want to display in the drop down menu.
