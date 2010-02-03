@@ -8,11 +8,10 @@ For an example, see example.png in this folder.
 Supersigs is free and available for download and editing. All you need is a
 server with HLstats Community Edition (or permission to access it's database)
 and the GD image library - so if you have HLStatsX:CE already then you can run
-SuperSifs. Configuration is mininal, and the installation simply involves
+SuperSigs. Configuration is mininal, and the installation simply involves
 copying the files across and changing a few lines in the config file.
 
-If anybody makes any improvements then please commit them back into the repo at
-http://github.com/mfoo/SuperSigs.
+If anybody makes any improvements then please let me know :)
 
 For installation instructions see INSTALL.
 
