@@ -60,7 +60,7 @@
 	
 	// Generate .php links or .jpg links. If you are using jpg links be sure to
 	// rename "htaccess" to ".htaccess".
-	$linkType = "php";
+	$linkType = "jpg";
 	
 	if(!($db = mysql_connect($statserver, $statsuser, $statspass))) {
 		die("Can't connect to the server!");

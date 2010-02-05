@@ -92,6 +92,11 @@
 		if($font=="") $font="visitor1";
 		$font = "fonts/".$font.".ttf";
 		
+		// Fallback to freemono if the font doesn't exist
+		if(!file_exists($font)){
+			$font = "fonts/FreeMono.ttf";
+		}
+
 		// Get the text string to print for each of the types
 		
 		switch($text){

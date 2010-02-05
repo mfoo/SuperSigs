@@ -97,3 +97,13 @@ Note: The download only contains sample background images for Team Fortress 2,
 and if you plan on running this on a different game you will need to add your
 own background images for the script to work. Check the FAQ for more information
 on adding your own sigs.
+
+If your forum does now allow .php files inside the [img] tag, then you can 
+set
+
+	$linkType = "jpg";
+	
+inside config.php. This will cause all images to link to sig.jpg rather than
+index.php. You can then rename the htaccess file to .htaccess and Apache should
+convert the sig.jpg calls to index.php calls, allowing them to be included in
+the forum.

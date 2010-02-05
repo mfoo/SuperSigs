@@ -77,10 +77,12 @@
 	$playerName = $data['name'];
 
 	// Choose a random background picture, weighted by the number of times they pick each class
-	if($_GET['background']=="" || $_GET['background']=="Random")
+	$background=isset($_GET['background'])?$_GET['background']:"";
+	
+	if(empty($background) || $background=="Random")
 		$backgroundPath = getRandomPicture($playerID, $game);
 	else
-		$backgroundPath = getSetBackgroundPicture($playerID, $_GET['background'], $game);
+		$backgroundPath = getSetBackgroundPicture($playerID, $background, $game);
 		
 	$background = imagecreatefromjpeg("images/" . $game . "/" . $backgroundPath);
 
@@ -90,7 +92,7 @@
 	
 	// Set the transparent colour as the colour at pixel 0,0 of the overlay
 	imagecolortransparent($overlay, imagecolorat($overlay, 0, 0));
-	imagecolortransparent($overlay, ffffff);
+	//imagecolortransparent($overlay, ffffff);
 
 	// Create some default colours for the text
 	$canvas = imagecreatetruecolor(1, 1);
@@ -103,7 +105,7 @@
 	// Add the 1px wide rectangle around the edge
 	imagerectangle($background, 0, 0, imagesx($overlay)-1, imagesy($overlay)-1, $black);
 
-	$font=$_GET['font'];
+	$font=isset($_GET['font'])?$_GET['font']:'FreeMono';
 	
 	// Draw everything they want, use mysql_real_escape_string() to sanitise
 	if(isset($_GET['one'])){  
