@@ -195,10 +195,10 @@
 				$text = "Kill Streak: " . $data['kill_streak'];
 				break;
 			case "serverrank":
-				$data = mysql_fetch_array(mysql_query("SELECT kills FROM hlstats_Players WHERE playerID = " . $playerID . " AND game = '" . $game . "'"));
+				$data = mysql_fetch_array(mysql_query("SELECT kills FROM hlstats_Players WHERE playerID = " . $playerID . " AND game = '" . $game . "' ORDER BY kills DESC"));
 				$data = $data['kills'];
-				$data = mysql_fetch_array(mysql_query("SELECT rankName FROM hlstats_Ranks WHERE maxKills <= " . $data['kills'] . " AND game = '" . $game . "' ORDER BY minKills DESC"));
-				$text = $data['rankName'];
+				$data = mysql_fetch_array(mysql_query("SELECT rankName FROM hlstats_Ranks WHERE maxKills <= " . $data . " AND game = '" . $game . "' ORDER BY minKills DESC LIMIT 1"));
+				$text = "Rank: " . $data['rankName'];
 				break;
 			case "time":
 				$data = mysql_fetch_array(mysql_query("SELECT Sum(connection_time) AS sum from hlstats_Players_History WHERE playerId =  " . $playerId . " AND game = '" . $game . "' GROUP BY playerId"));
