@@ -95,7 +95,8 @@ END;
 					($("select[name=eleven]").val() == "customeleven" ? $("input[name=customeleven]").val() : $("select[name=eleven]").val()) + "&twelve=" +
 					($("select[name=twelve]").val() == "customtwelve" ? $("input[name=customtwelve]").val() : $("select[name=twelve]").val()) + "&font=" +
 					$("select[name=font]").val() + "&background=" +
-					$("select[name=background]").val();
+					$("select[name=background]").val() + "&sId=" +
+					$("select[name=sId]").val();
 			}
 			
 			function reloadImage(){
@@ -210,6 +211,7 @@ END;
 							else
 								$url .= "&background=Random";
 				
+							$url .= "&sId=" . $_POST['sId'];
 							// Output the text
 							echo "<p>Your sig can be seen here:</p>\n\n<p style=\"height: 75px;\"><img src=\"index.php?generate=true&id=" . urlencode($_POST['id']) . $url ."\" alt=\"signature\" id=\"sig\"/>\n</p>";
 							echo "<p>Your signature code is:</p>\n";
@@ -288,6 +290,15 @@ END;
 							}
 						}
 						
+						echo "</select></p>";
+						
+						echo "<p>Select a server to generate stats for:</p>";
+						echo "<p><select name=\"sId\">";
+						
+						$servers = mysql_query("SELECT serverId, name FROM `hlstats_Servers`");
+						while(($data = mysql_fetch_array($servers)) != null){
+							echo "<option value = " . $data['serverId'] . ">" . $data['name'] . "</option>";
+						}
 						echo "</select></p>";
 						
 						echo "<p>What is your player name?</p>\n<p><input type=\"text\" name=\"id\" value=\"" . $_POST['id'] . "\"/></p>\n
