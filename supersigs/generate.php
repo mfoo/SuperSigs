@@ -219,7 +219,7 @@ END;
 							echo "<p>Your signature code is:</p>\n";
 							echo "<form name=\"copytext\">";
 							echo "<textarea name=\"output\" rows=\"3\" cols=\"50\" wrap=\"on\">";
-							echo "[url=http://" . $servername . "/" . $statsDir . "/hlstats.php?mode=playerinfo&player=" . $data['playerId'] . "][img]http://" . $servername . "/" . $sigsDir . "/" . ($linkType == "php" ? "index.php" : "sig.png") . "?id=". urlencode($_POST['id']) . $url . "[/img][/url]";
+							echo "[url=http://" . $servername . "/" . ($statsDir == "" ? "" : "/") . "hlstats.php?mode=playerinfo&player=" . $data['playerId'] . "][img]http://" . $servername . "/" . ($sigsDir == "" ? "" : /? $sigsDir . "/") . ($linkType == "php" ? "index.php" : "sig.png") . "?id=". urlencode($_POST['id']) . $url . "[/img][/url]";
 							echo "</textarea>";
 							echo "<br />\n<input type=\"button\" value=\"Select all\" onchange=\"this.form.output.focus();this.form.output.select();copied=document.selection.createRange();copied.execCommand('copy');\">";
 							echo "</form>";
