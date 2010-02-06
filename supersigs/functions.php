@@ -166,7 +166,7 @@
 				$text = "Suicides: " . $data['count'];
 				break;	
 			case "sandvich":
-				$data = mysql_fetch_array(mysql_query("SELECT Count(actionId) AS count FROM `hlstats_Events_PlayerActions` WHERE actionId = (SELECT id FROM `hlstats_Actions` WHERE code = 'sandvich' AND game = '" . $game . "') AND playerId = " . $playerID . ") AND serverId = " . $serverId));
+				$data = mysql_fetch_array(mysql_query("SELECT Count(actionId) AS count FROM `hlstats_Events_PlayerActions` WHERE actionId = (SELECT id FROM `hlstats_Actions` WHERE code = 'sandvich' AND game = '" . $game . "') AND playerId = " . $playerID . " AND serverId = " . $serverId));
 				$text = "Sandviches eaten: " . $data['count'];
 				break;
 			// Shots don't get recorded by TF2 server, only for games like CSS :(
@@ -177,7 +177,7 @@
 			case "recentaward":
 				$data = mysql_fetch_array(mysql_query("SELECT awardId FROM hlstats_Players_Awards WHERE playerId =" . $playerID . " AND game = '" . $game . "' ORDER BY awardTime DESC"));
 				$data = mysql_fetch_array(mysql_query("SELECT verb FROM hlstats_Awards WHERE awardId = " . $data['awardId']));
-				$text = "Most recent award: " . $data['verb'];
+				$text = "Most recent award: " . ($data['verb'] == "" ? "None" : $data['verb']);
 				break;		
 			case "averageping":
 				$data = mysql_query("SELECT ping FROM hlstats_Events_Latency WHERE playerId = " . $playerID . " AND serverId = " . $serverId);
@@ -238,8 +238,8 @@
 				$text = "Ubers deployed: " . $data['count'];
 				break;	
 			case "wrenchkills":
-				$data = mysql_fetch_array(mysql_query("SELECT COUNT(weapon) as count FROM hlstats_Events_Frags WHERE weapon='wrench' AND killerId = " . $playerID . " AND serverId = " . $serverId . " GROUP BY weapon ORDER BY weapon DESC"));
-				$text = "Wrench kills: " . $data['count'];
+				$data = mysql_fetch_array(mysql_query("SELECT Count(weapon) as count FROM hlstats_Events_Frags WHERE weapon='wrench' AND killerId = " . $playerID . " AND serverId = " . $serverId . " GROUP BY weapon ORDER BY weapon DESC"));
+				$text = "Wrench kills: " . (empty($data['count']) ? "0" : $data['count']);
 				break;
 			case "scorechange":
 				$data = mysql_fetch_array(mysql_query("SELECT skill, last_skill_change FROM hlstats_Players WHERE playerId = " . $playerID . " AND game = '" . $game . "'"));
