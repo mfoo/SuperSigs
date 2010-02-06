@@ -1,2 +1,2 @@
 RewriteEngine on
-RewriteRule sig\.jpg(.*) index.php$1
+RewriteRule sig\.png(.*) index.php$1
