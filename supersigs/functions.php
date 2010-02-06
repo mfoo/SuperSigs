@@ -107,7 +107,7 @@
 				$kills = $kills['kills'];
 				$deaths = mysql_fetch_array(mysql_query("SELECT Count(*) as deaths FROM hlstats_Events_Frags WHERE victimId = " . $playerID . " AND serverId = ". $serverId . " LIMIT 1"));
 				$deaths = $deaths['deaths'];
-				$text = "KPD: " . number_format($kills/$deaths,2);
+				$text = "KPD: " . ($deaths == 0 ? "0" : number_format($kills/$deaths,2));
 				break;
 			case "kills":
 				$data = mysql_fetch_array(mysql_query("SELECT Count(*) as kills FROM hlstats_Events_Frags WHERE killerId = " . $playerID . " AND serverId = ". $serverId . " LIMIT 1"));
