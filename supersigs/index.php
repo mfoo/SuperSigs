@@ -173,6 +173,7 @@
 	// If they are updating their sig, write the sig image to a file cache then point the browser to it
 	else{
 		imagepng($background, "sigs/" . $playerID . ".png");
+		chmod("sigs/" . $playerID . ".png", 0644);
 		header('Location: sigs/' . $playerID . '.png');
 	}	
 	
@@ -182,4 +183,3 @@
 	imagedestroy($canvas);
 	mysql_close($db);
 ?>
-
