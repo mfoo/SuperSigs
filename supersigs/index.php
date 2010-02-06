@@ -98,7 +98,7 @@
 	$canvas = imagecreatetruecolor(1, 1);
 	$black = imagecolorallocate($canvas, $backgroundr, $backgroundg, $backgroundb);
 	$white = imagecolorallocate($canvas, $foregroundr, $foregroundg, $foregroundb);
-	
+
 	// Apply the semi-transparent overlay to the background image
 	imagecopy($background, $overlay, 0, 0, 0, 0, imagesx($overlay), imagesy($overlay));
 
@@ -109,24 +109,24 @@
 	$serverId = mysql_real_escape_string($_GET['sId']);
 	$game = mysql_fetch_array(mysql_query("SELECT game FROM hlstats_Servers WHERE serverId = " . $serverId));
 	$game = $game[0];
-	
+
 	// Draw everything they want, use mysql_real_escape_string() to sanitise
 	if(isset($_GET['one'])){  
 		$background = drawText($playerID, $serverId, $game, "one", $background, $coordinates[0][1], $coordinates[0][2], mysql_real_escape_string($_GET['one']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['two'])){
 		$background = drawText($playerID, $serverId, $game, "two", $background, $coordinates[1][1], $coordinates[1][2],  mysql_real_escape_string($_GET['two']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['three'])){
 		$background = drawText($playerID, $serverId, $game, "three", $background, $coordinates[2][1], $coordinates[2][2],  mysql_real_escape_string($_GET['three']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['four'])){
 		$background = drawText($playerID, $serverId, $game, "four", $background, $coordinates[3][1], $coordinates[3][2],  mysql_real_escape_string($_GET['four']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['five'])){
 		$background = drawText($playerID, $serverId, $game, "five", $background, $coordinates[4][1], $coordinates[4][2],  mysql_real_escape_string($_GET['five']), $black, $white, $size, $font);
 	}
@@ -134,15 +134,15 @@
 	if(isset($_GET['six'])){
 		$background = drawText($playerID, $serverId, $game, "six", $background, $coordinates[5][1], $coordinates[5][2],  mysql_real_escape_string($_GET['six']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['seven'])){
 		$background = drawText($playerID, $serverId, $game, "seven", $background, $coordinates[6][1], $coordinates[6][2],  mysql_real_escape_string($_GET['seven']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['eight'])){
 		$background = drawText($playerID, $serverId, $game, "eight", $background, $coordinates[7][1], $coordinates[7][2],  mysql_real_escape_string($_GET['eight']), $black, $white, $size, $font);
 	}
-	
+
 	if(isset($_GET['nine'])){
 		$background = drawText($playerID, $serverId, $game, "nine", $background, $coordinates[8][1], $coordinates[8][2],  mysql_real_escape_string($_GET['nine']), $black, $white, $size, $font);
 	}
@@ -164,6 +164,8 @@
 	$size = 8;
 	$background = drawText($playerID, $serverId, $game, "thirteen", $background, $coordinates[12][1], $coordinates[12][2],  $servername, $black, $white, $size, $font);
 
+	ob_start();
+	
 	// If they're generating the image, set the content headers and give the browser the new image. This stops people who test new sigs overwriting their current one.
 	if(isset($_GET['generate'])){
 		header("Content-type: image/png");
@@ -176,6 +178,8 @@
 		chmod("sigs/" . $playerID . ".png", 0644);
 		header('Location: sigs/' . $playerID . '.png');
 	}	
+	
+	ob_end_flush();
 	
 	// Destroy the image resources to free up memory
 	imagedestroy($overlay);

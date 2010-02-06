@@ -30,6 +30,8 @@
 		// Get a table containing the name of each class and the number of times they've changed to it from the DB
 		$data = mysql_query("SELECT role, Count(role) as rolecount FROM `hlstats_Events_ChangeRole` WHERE playerId = " . $playerID . " AND eventTime > " . (time() - ( 60 * 60 * 24 * 30) ) . " GROUP BY role ORDER BY rolecount DESC");
 		
+		if($totalChanges == 0) $totalChanges = 1;
+		
 		// Calculate the class
 		$random = rand(1,100) / 100;
 		while($classname = mysql_fetch_array($data)){
@@ -107,7 +109,8 @@
 				$kills = $kills['kills'];
 				$deaths = mysql_fetch_array(mysql_query("SELECT Count(*) as deaths FROM hlstats_Events_Frags WHERE victimId = " . $playerID . " AND serverId = ". $serverId . " LIMIT 1"));
 				$deaths = $deaths['deaths'];
-				$text = "KPD: " . ($deaths == 0 ? "0" : number_format($kills/$deaths,2));
+				
+				$text = "KPD: " . ($deaths == 0 ? $kills : number_format($kills/$deaths,2));
 				break;
 			case "kills":
 				$data = mysql_fetch_array(mysql_query("SELECT Count(*) as kills FROM hlstats_Events_Frags WHERE killerId = " . $playerID . " AND serverId = ". $serverId . " LIMIT 1"));
@@ -184,6 +187,7 @@
 					$text += $ping['ping'];
 					$count++;
 				}
+				if($count == 0) $count = 1;
 				$text = "Average ping: " . floor($text / $count);
 				break;
 			case "country":
@@ -201,10 +205,16 @@
 				$text = "Rank: " . $data['rankName'];
 				break;
 			case "time":
-				$data = mysql_fetch_array(mysql_query("SELECT Sum(connection_time) AS sum from hlstats_Players_History WHERE playerId =  " . $playerId . " AND game = '" . $game . "' GROUP BY playerId"));
-				$data = $data['sum'];
-				$days = floor($data / (60*60*24));
-				$hours = floor(($data - ($days * 60 * 60 * 24)) / (60*60));
+				$query = mysql_query("SELECT Sum(connection_time) AS sum from hlstats_Players_History WHERE playerId =  " . $playerId . " AND game = '" . $game . "' GROUP BY playerId");
+				if($data){
+					$data = mysql_fetch_array($query);
+					$data = $data['sum'];
+					$days = floor($data / (60*60*24));
+					$hours = floor(($data - ($days * 60 * 60 * 24)) / (60*60));
+				} else {
+					$days = 0;
+					$hours = 0;
+				}
 				$text = "Connection time: " . $days . " days ". $hours . " hours";
 				break;
 			case "sentries":
