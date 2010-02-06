@@ -42,8 +42,14 @@
 	mysql_query("SET NAMES 'utf8'");
 	
 	// If they entered a text string, assume it was the player name and grab their ID
+	$serverId = mysql_real_escape_string($_GET['sId']);
+	$game = mysql_fetch_array(mysql_query("SELECT game FROM hlstats_Servers WHERE serverId = " . $serverId));
+	$game = $game[0];
+	
+	// If they have posted a text name from the generator, link it to an id
 	if(!is_numeric($playerID)){
-		$data = mysql_fetch_array(mysql_query("SELECT playerId FROM hlstats_PlayerNames WHERE name = '" . $playerID . "' ORDER BY numuses DESC"));
+		// Get the ID of the player that uses that name the most then find out what the last name they used in game $game was.
+		$data = mysql_fetch_array(mysql_query("SELECT playerId FROM hlstats_Players WHERE playerId = (SELECT playerId FROM hlstats_PlayerNames WHERE name LIKE '%" . $playerID . "%' ORDER BY numuses DESC LIMIT 1) AND game = '" . $game . "'"));
 		if(is_null($data)) 
 			die("Invalid player name!");
 
@@ -106,9 +112,6 @@
 	imagerectangle($background, 0, 0, imagesx($overlay)-1, imagesy($overlay)-1, $black);
 
 	$font=isset($_GET['font'])?$_GET['font']:'FreeMono';
-	$serverId = mysql_real_escape_string($_GET['sId']);
-	$game = mysql_fetch_array(mysql_query("SELECT game FROM hlstats_Servers WHERE serverId = " . $serverId));
-	$game = $game[0];
 
 	// Draw everything they want, use mysql_real_escape_string() to sanitise
 	if(isset($_GET['one'])){  
