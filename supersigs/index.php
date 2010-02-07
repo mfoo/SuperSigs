@@ -56,7 +56,7 @@
 		}
 	}
 
-	if(empty($oops){
+	if(empty($oops)){
 		// If there is nothing wrong so far
 		if(!isset($_GET['id'])){
 			// If they didn't enter a user ID
