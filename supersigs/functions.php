@@ -41,14 +41,24 @@
 			}
 		}
 
+		// Get the server ID from the game
+		$data = mysql_fetch_array(mysql_query("SELECT serverId FROM hlstats_Servers WHERE game = '" . $game . "'"));
+		$serverId = $data['serverId'];
+
 		// If the random number turned out to be too low, pick the most picked class
-		if(is_null($role)){
-			$data = mysql_fetch_array(mysql_query("SELECT role, Count(role) as rolecount FROM `hlstats_Events_ChangeRole` WHERE playerId = " . $playerID . " AND eventTime > " . (time() - ( 60 * 60 * 24 * 30) ) . " AND serverId = " . $serverId . " GROUP BY role ORDER BY rolecount DESC LIMIT 1"));
+		if(is_null($role)){		
+		$lol = "SELECT role, Count(role) as rolecount FROM `hlstats_Events_ChangeRole` WHERE playerId = " . $playerID . " AND eventTime > " . (time() - ( 60 * 60 * 24 * 30) ) . " AND serverId = " . $serverId . " GROUP BY role ORDER BY rolecount DESC LIMIT 1";
+		//echo $lol;
+			$data = mysql_fetch_array(mysql_query($lol));
 			$role = $data['role'];
 		}
 
 		// Set up index variable
 		$i = 0;
+		
+		// Get the real game that the server runs so we can use the background images for it
+		$data = mysql_fetch_array(mysql_query("SELECT realgame FROM hlstats_Games WHERE code = '" . $game . "'"));
+		$game = $data['realgame'];
 		
 		// Get the list of all files in the images directory for that class
 		$files = opendir("images/" . $game . "/" . $role);

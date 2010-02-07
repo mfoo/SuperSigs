@@ -10,9 +10,7 @@
 	include('config.php');
 	include('functions.php');
 
-
 	/************ VARIABLES ************/
-
 	
 	// Array for the co-ordinates of the text positions in the image
 	$coordinates = array(
@@ -32,65 +30,113 @@
 				);
 
 	/************** BODY ***************/
-
-	// Check if they entered an ID, if they didn't, quit
-	if(!isset($_GET['id']))
-		die("Please enter a player name or ID!");
+	$oops = "";
+	$playerID = "";
 	
-	$playerID = mysql_real_escape_string($_GET['id']);
-
-	mysql_query("SET NAMES 'utf8'");
+		// TODO: Fix later
+	$game = "tf";
 	
-	// If they entered a text string, assume it was the player name and grab their ID
-	$serverId = mysql_real_escape_string($_GET['sId']);
-	$game = mysql_fetch_array(mysql_query("SELECT game FROM hlstats_Servers WHERE serverId = " . $serverId));
-	$game = $game[0];
-	
-	// If they have posted a text name from the generator, link it to an id
-	if(!is_numeric($playerID)){
-		// Get the ID of the player that uses that name the most then find out what the last name they used in game $game was.
-		$data = mysql_fetch_array(mysql_query("SELECT playerId FROM hlstats_Players WHERE playerId = (SELECT playerId FROM hlstats_PlayerNames WHERE name LIKE '%" . $playerID . "%' ORDER BY numuses DESC LIMIT 1) AND game = '" . $game . "'"));
-		if(is_null($data)) 
-			die("Invalid player name!");
+	if(!isset($_GET['sId'])){
+		$oops = "Please enter a server ID.";
+	} else {
+		// Find the server id that they entered and it's corresponding game type
+		$serverId = mysql_real_escape_string($_GET['sId']);
+		$game = mysql_fetch_array(mysql_query("SELECT game FROM hlstats_Servers WHERE serverId = " . $serverId));
+		$game = $game[0];
+		if($game != "tf"){
+			$oops = "Unsupported game type: " . $game;
+			$game = "tf";
+		}
 
-		$playerID = $data['playerId'];
-	}
-
-	// If they are generating the sig, set the cache expiry time to zero - forcing a redraw for the sig demo pic
-	if(isset($_GET['generate']))
-		$cacheExpiryTime = 0;
-
-	// Check if a cache of their sig exists already
-	$cacheExists = checkCache($playerID);
-
-	// If a file exists but is too old, or it does not exist then create the new file
-	if($cacheExists && getFileAge($playerID) > $cacheExpiryTime || !$cacheExists){
-		$result = mysql_query("SELECT name FROM hlstats_PlayerNames WHERE playerId = " . $playerID . " ORDER BY numuses DESC");
-		if($result==false)
-			die("Player does not exist! Try a different name.");
-	}
-
-	// If the file is still cached, redirect to it
-	else {
-		header("Location: sigs/$playerID.png"); 
-		die(); // not needed
 	}
 	
-	// Begin making the signature
+	// Check if they entered an ID, if they didn't then warn them
+	if(!isset($_GET['id']) && empty($oops)) {
+		$oops = "Please enter a player ID!";
+	} else {
+		// They have entered a player ID
+		$playerID = mysql_real_escape_string($_GET['id']);
+
+		mysql_query("SET NAMES 'utf8'");
 	
-	// Get their name
-	$data = mysql_fetch_array($result);
-	$playerName = $data['name'];
+		// If they entered a text string, assume it was the player name and grab their ID
+		if(!is_numeric($playerID)){
+			// Get the ID of the player that uses that name the most then find out what the last name they used in game $game was.
+			$data = mysql_query("SELECT playerId FROM `hlstats_PlayerNames` WHERE name = '" . $playerID . "' GROUP BY playerId ORDER BY SUM(connection_time) DESC");
+$foundPlayerID = "";
+			if(is_null($data)){
+				$oops = "Player name doesn't seem to exist!";
+			} else {
+				// We have a list of players who have that name ordered by total connection time.
+				// Find which one of those players has played on the requested server
+				while($id = mysql_fetch_array($data)){
+					//echo "checking id " . $id['playerId'] . ".";
+					// Check if they have played on server $serverId
+					if(mysql_num_rows(mysql_query("SELECT playerId FROM hlstats_Events_Connects WHERE playerId = " . $id['playerId'] . " AND serverId = " . $serverId)) != 0){
+						// They have connected to the server, use this id
+						$foundPlayerID = $id['playerId'];
+						break;
+					}
+				}
+						//echo "found id" . $foundPlayerID;
+				if(empty($foundPlayerID)){
+					$oops = "It doesn't look like you have played on this server.";
+				} else {
+					$playerID = $foundPlayerID;
+				}
+			}		
+		} else {
+			// If it was numeric, they must have used the generator before, but the stats might have been reset since they last played on the server.
+			if(mysql_num_rows(mysql_query("SELECT playerId FROM hlstats_Events_Connects WHERE playerId = " . $playerID . " AND serverId = " . $serverId)) == 0){
+				$oops = "It doesn't look like you have played on this server.";
+			}
+		}
+
+		if(empty($oops)){
+			// There have been no problems
+
+			// If they are generating the sig, set the cache expiry time to zero - forcing a redraw for the sig demo pic
+			if(isset($_GET['generate']))
+				$cacheExpiryTime = 0;
+
+			// Check if a cache of their sig exists already
+			$cacheExists = checkCache($playerID);
+
+			// If a file exists and it isn't too old, redirect them to it
+			if(!($cacheExists && getFileAge($playerID) > $cacheExpiryTime || !$cacheExists)){
+				header("Location: sigs/" . $playerID . ".png");
+				die();
+			}
+	
+			// Begin making the signature
+			// Get their most used ingame name
+			$data = mysql_query("SELECT name FROM `hlstats_PlayerNames` WHERE playerId = " . $playerID . " ORDER BY numuses DESC LIMIT 1");
+			$data = mysql_fetch_array($data);
+			$playerName = $data['lastName'];
+		}
+	}
+//	echo $playerID . " " . $oops;
 
 	// Choose a random background picture, weighted by the number of times they pick each class
-	$background=isset($_GET['background'])?$_GET['background']:"";
+	$background = isset($_GET['background']) ? mysql_real_escape_string($_GET['background']) : "Random";
+
+	if(empty($oops)){
+		if($background == "Random"){
+			$backgroundPath = getRandomPicture($playerID, $game);
+		}
+		else
+			$backgroundPath = getSetBackgroundPicture($playerID, $background, $game);
+	} else {
+		// TODO: Default to an image related to the actual game
+		// Default to a soldier image if there is a problem
+		$backgroundPath =  "soldier/1.jpg";
+	}
 	
-	if(empty($background) || $background=="Random")
-		$backgroundPath = getRandomPicture($playerID, $game);
-	else
-		$backgroundPath = getSetBackgroundPicture($playerID, $background, $game);
-		
-	$background = imagecreatefromjpeg("images/" . $game . "/" . $backgroundPath);
+	// Get the real game that the server runs so we can use the background images for it
+	$data = mysql_fetch_array(mysql_query("SELECT realgame FROM hlstats_Games WHERE code = '" . $game . "'"));
+	$realgame = $data['realgame'];
+	
+	$background = imagecreatefromjpeg("images/" . $realgame . "/" . $backgroundPath);
 
 	// Load the transparent overlay into an image resource
 	$overlay = imagecreatefrompng("img/overlay.png");
@@ -112,56 +158,60 @@
 	imagerectangle($background, 0, 0, imagesx($overlay)-1, imagesy($overlay)-1, $black);
 
 	$font=isset($_GET['font'])?$_GET['font']:'FreeMono';
-
-	// Draw everything they want, use mysql_real_escape_string() to sanitise
-	if(isset($_GET['one'])){  
-		$background = drawText($playerID, $serverId, $game, "one", $background, $coordinates[0][1], $coordinates[0][2], mysql_real_escape_string($_GET['one']), $black, $white, $size, $font);
-	}
-
-	if(isset($_GET['two'])){
-		$background = drawText($playerID, $serverId, $game, "two", $background, $coordinates[1][1], $coordinates[1][2],  mysql_real_escape_string($_GET['two']), $black, $white, $size, $font);
-	}
-
-	if(isset($_GET['three'])){
-		$background = drawText($playerID, $serverId, $game, "three", $background, $coordinates[2][1], $coordinates[2][2],  mysql_real_escape_string($_GET['three']), $black, $white, $size, $font);
-	}
-
-	if(isset($_GET['four'])){
-		$background = drawText($playerID, $serverId, $game, "four", $background, $coordinates[3][1], $coordinates[3][2],  mysql_real_escape_string($_GET['four']), $black, $white, $size, $font);
-	}
-
-	if(isset($_GET['five'])){
-		$background = drawText($playerID, $serverId, $game, "five", $background, $coordinates[4][1], $coordinates[4][2],  mysql_real_escape_string($_GET['five']), $black, $white, $size, $font);
-	}
 	
-	if(isset($_GET['six'])){
-		$background = drawText($playerID, $serverId, $game, "six", $background, $coordinates[5][1], $coordinates[5][2],  mysql_real_escape_string($_GET['six']), $black, $white, $size, $font);
-	}
+	if(empty($oops)){
+		// Draw everything they want, use mysql_real_escape_string() to sanitise
+		if(isset($_GET['one'])){  
+			$background = drawText($playerID, $serverId, $game, "one", $background, $coordinates[0][1], $coordinates[0][2], mysql_real_escape_string($_GET['one']), $black, $white, $size, $font);
+		}
 
-	if(isset($_GET['seven'])){
-		$background = drawText($playerID, $serverId, $game, "seven", $background, $coordinates[6][1], $coordinates[6][2],  mysql_real_escape_string($_GET['seven']), $black, $white, $size, $font);
-	}
+		if(isset($_GET['two'])){
+			$background = drawText($playerID, $serverId, $game, "two", $background, $coordinates[1][1], $coordinates[1][2],  mysql_real_escape_string($_GET['two']), $black, $white, $size, $font);
+		}
 
-	if(isset($_GET['eight'])){
-		$background = drawText($playerID, $serverId, $game, "eight", $background, $coordinates[7][1], $coordinates[7][2],  mysql_real_escape_string($_GET['eight']), $black, $white, $size, $font);
-	}
+		if(isset($_GET['three'])){
+			$background = drawText($playerID, $serverId, $game, "three", $background, $coordinates[2][1], $coordinates[2][2],  mysql_real_escape_string($_GET['three']), $black, $white, $size, $font);
+		}
 
-	if(isset($_GET['nine'])){
-		$background = drawText($playerID, $serverId, $game, "nine", $background, $coordinates[8][1], $coordinates[8][2],  mysql_real_escape_string($_GET['nine']), $black, $white, $size, $font);
-	}
+		if(isset($_GET['four'])){
+			$background = drawText($playerID, $serverId, $game, "four", $background, $coordinates[3][1], $coordinates[3][2],  mysql_real_escape_string($_GET['four']), $black, $white, $size, $font);
+		}
+
+		if(isset($_GET['five'])){
+			$background = drawText($playerID, $serverId, $game, "five", $background, $coordinates[4][1], $coordinates[4][2],  mysql_real_escape_string($_GET['five']), $black, $white, $size, $font);
+		}
 	
-	if(isset($_GET['ten'])){
-		$background = drawText($playerID, $serverId, $game, "ten", $background, $coordinates[9][1], $coordinates[9][2],  mysql_real_escape_string($_GET['ten']), $black, $white, $size, $font);
-	}
+		if(isset($_GET['six'])){
+			$background = drawText($playerID, $serverId, $game, "six", $background, $coordinates[5][1], $coordinates[5][2],  mysql_real_escape_string($_GET['six']), $black, $white, $size, $font);
+		}
+
+		if(isset($_GET['seven'])){
+			$background = drawText($playerID, $serverId, $game, "seven", $background, $coordinates[6][1], $coordinates[6][2],  mysql_real_escape_string($_GET['seven']), $black, $white, $size, $font);
+		}
+
+		if(isset($_GET['eight'])){
+			$background = drawText($playerID, $serverId, $game, "eight", $background, $coordinates[7][1], $coordinates[7][2],  mysql_real_escape_string($_GET['eight']), $black, $white, $size, $font);
+		}
+
+		if(isset($_GET['nine'])){
+			$background = drawText($playerID, $serverId, $game, "nine", $background, $coordinates[8][1], $coordinates[8][2],  mysql_real_escape_string($_GET['nine']), $black, $white, $size, $font);
+		}
 	
-	if(isset($_GET['eleven'])){
-		$background = drawText($playerID, $serverId, $game, "eleven", $background, $coordinates[10][1], $coordinates[10][2],  mysql_real_escape_string($_GET['eleven']), $black, $white, $size, $font);
-	}
+		if(isset($_GET['ten'])){
+			$background = drawText($playerID, $serverId, $game, "ten", $background, $coordinates[9][1], $coordinates[9][2],  mysql_real_escape_string($_GET['ten']), $black, $white, $size, $font);
+		}
 	
-	if(isset($_GET['twelve'])){
-		$background = drawText($playerID, $serverId, $game, "twelve", $background, $coordinates[11][1], $coordinates[11][2],  mysql_real_escape_string($_GET['twelve']), $black, $white, $size, $font);
-	}
+		if(isset($_GET['eleven'])){
+			$background = drawText($playerID, $serverId, $game, "eleven", $background, $coordinates[10][1], $coordinates[10][2],  mysql_real_escape_string($_GET['eleven']), $black, $white, $size, $font);
+		}
 	
+		if(isset($_GET['twelve'])){
+			$background = drawText($playerID, $serverId, $game, "twelve", $background, $coordinates[11][1], $coordinates[11][2],  mysql_real_escape_string($_GET['twelve']), $black, $white, $size, $font);
+		}
+	} else {
+		// Die gracefully, print an error on the image
+		$background = drawText($playerID, $serverId, $game, "one", $background, $coordinates[0][1], $coordinates[0][2], mysql_real_escape_string($oops), $black, $white, $size, $font);
+	}	
 
 	// Set the text size for the server name text
 	$size = 8;

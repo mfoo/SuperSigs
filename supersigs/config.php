@@ -9,7 +9,7 @@
 	$statserver = 'localhost';
 	$statsuser = 'root';
 	$statspass = 'toor';
-	$statsdb = 'hlstats';
+	$statsdb = 'hlxrogue';
 
 		// The cache expiry time for signatures, in seconds
 	$cacheExpiryTime = 60*60;
