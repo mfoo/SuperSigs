@@ -48,7 +48,7 @@
 		$realgame = $realgame[0];
 
 		// Only allow "tf" games for now.
-		if($realgame != "tf"){
+		if(array_search($realgame, $excludeList)){
 			$oops = "Unsupported game type: " . $realgame;
 
 			// Set the realgame so that the error message will have an image from the tf folder.

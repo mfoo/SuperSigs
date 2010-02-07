@@ -297,9 +297,10 @@ END;
 						echo "<p>Select a server to generate stats for:</p>";
 						echo "<p><select name=\"sId\">";
 						
-						$servers = mysql_query("SELECT serverId, name FROM `hlstats_Servers`");
+						$servers = mysql_query("SELECT `serverId`, `hlstats_Servers`.`name`, `realgame` FROM `hlstats_Servers` INNER JOIN `hlstats_Games` ON `hlstats_Servers`.`game` = `hlstats_Games`.`code`");
 						while(($data = mysql_fetch_array($servers)) != null){
-							echo "<option value = " . $data['serverId'] . ">" . $data['name'] . "</option>";
+							if(!array_search($data['realgame'], $excludeList))
+								echo "<option value = " . $data['serverId'] . ">" . $data['name'] . "</option>";
 						}
 						echo "</select></p>";
 						

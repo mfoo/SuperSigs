@@ -57,6 +57,10 @@
 	
 	// Note, currently only tf, ff, and dods are supported.
 	$game = "tf";
+
+	// Don't allow stats to be generated for the following types of games:
+	$excludeList = array("aoc", "bg2", "css", "cstrike", "dod", "dods", "dystopia", "ff", "fof",
+		"ges", "hidden", "hl2mp", "insmod", "l4d", "ns", "nts", "sgtls", "tfs", "zps");
 	
 	// Generate .php links or .jpg links. If you are using jpg links be sure to
 	// rename "htaccess" to ".htaccess".
