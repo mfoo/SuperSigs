@@ -41,15 +41,9 @@
 			}
 		}
 
-		// Get the server ID from the game
-		$data = mysql_fetch_array(mysql_query("SELECT serverId FROM hlstats_Servers WHERE game = '" . $game . "'"));
-		$serverId = $data['serverId'];
-
 		// If the random number turned out to be too low, pick the most picked class
 		if(is_null($role)){		
-		$lol = "SELECT role, Count(role) as rolecount FROM `hlstats_Events_ChangeRole` WHERE playerId = " . $playerID . " AND eventTime > " . (time() - ( 60 * 60 * 24 * 30) ) . " AND serverId = " . $serverId . " GROUP BY role ORDER BY rolecount DESC LIMIT 1";
-		//echo $lol;
-			$data = mysql_fetch_array(mysql_query($lol));
+			$data = mysql_fetch_array(mysql_query("SELECT role, Count(role) as rolecount FROM `hlstats_Events_ChangeRole` WHERE playerId = " . $playerID . " AND eventTime > " . (time() - ( 60 * 60 * 24 * 30) ) . " AND serverId IN  (SELECT serverId FROM hlstats_Servers WHERE game = '" . $game . "') GROUP BY role ORDER BY rolecount DESC LIMIT 1"));
 			$role = $data['role'];
 		}
 
