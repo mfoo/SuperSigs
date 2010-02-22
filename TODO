@@ -3,3 +3,7 @@ TODO
 Things left to do:
 * Gather images for games other than TF2
 * Add support for games that do not have roles in hlstats_Roles
+* Find a default server ID if one is not specified to allow support for people who are using an old version of SuperSigs and haven't updated recently.
+* Change the "Nothing" list element to blank.
+* Set the default highlighted item as a list item rather than the code of the list item on refresh in the generator.
+* Update the signature script box with JavaScript when changed
